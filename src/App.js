@@ -9,9 +9,7 @@ import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import SignIn from './components/SignIn/SignIn.js';
 import Register from './components/Register/Register.js';
 
-const app = new Clarifai.App({
- apiKey: 'ea29a72138a5426b8da1488a8fee73ba'
-});
+
 
 const initialState = {
 	input: ' ',
@@ -71,15 +69,18 @@ class App extends Component{
 	}
 
 	onButtonSubmit= () => {
-		this.setState({imageUrl: this.state.input})
-		app.models
-     		.predict(
-     			Clarifai.FACE_DETECT_MODEL,
-     			        this.state.input)
+		this.setState({imageUrl: this.state.input});
+				fetch('https://blooming-bayou-26052.herokuapp.com/imageurl',{
+					method: 'post',
+					headers: { 'Content-Type' : 'application/json'},
+					body: JSON.stringify({
+						input: this.state.input
+					})
+				})
+				.then( response =>response.json())	
      			      .then(response => {
-     			        console.log('hi', response)
      			        if (response) {
-     			          fetch('http://localhost:3000/image', {
+     			          fetch('https://blooming-bayou-26052.herokuapp.com/image', {
      			            method: 'put',
      			            headers: {'Content-Type': 'application/json'},
      			            body: JSON.stringify({
